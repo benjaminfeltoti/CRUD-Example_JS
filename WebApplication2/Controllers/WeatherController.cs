@@ -23,7 +23,7 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecastModel> Get()
         {
-            return new WeatherService().GetWeatherForecasts();
+            return new WeatherForecastService().GetWeatherForecasts();
         }
 
         // GET api/<WeatherController>/5
