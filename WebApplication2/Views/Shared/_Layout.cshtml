@@ -63,7 +63,7 @@
             <input type="submit" value="Create New" />
         </form>
     </div>
-    
+
     <br />
 
     <div style="padding-top : 20px">
@@ -80,6 +80,15 @@
         </form>
     </div>
 
+    <br />
+
+    <div style="padding-top : 20px">
+        <h1>DELETE</h1>
+        <form action="javascript:void(0);" method="post" onsubmit="DeleteWeatherForecast();">
+            <select id="deleteIdCombobox" selected=""></select>            
+            <input type="submit" value="Delete" />
+        </form>
+    </div>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)

@@ -1,7 +1,7 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
-var GetWeatherForecasts, CreateNewWeatherForecast, UpdateWeatherForecast;
+var GetWeatherForecasts, CreateNewWeatherForecast, UpdateWeatherForecast, DeleteWeatherForecast;
 
 var app = function () {
 
@@ -43,6 +43,7 @@ var app = function () {
 
         document.getElementById("contentTable").innerHTML = tableContent;
         document.getElementById("changeIdCombobox").innerHTML = comboboxContent;
+        document.getElementById("deleteIdCombobox").innerHTML = comboboxContent;
     }
 
     async function createNewWeatherForecast() {
@@ -92,9 +93,27 @@ var app = function () {
         console.log(content); */
     }
 
+    async function deleteWeatherForecast() {
+        console.log("DELETE WAS CALLED!");
+
+        const id = Number(document.getElementById("deleteIdCombobox").value);
+        let response = await fetch(`api/weather/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: ""
+        });
+        // TODO : Handle bad request
+        /* const content = await response.json();
+        console.log(content); */
+    }
+
     GetWeatherForecasts = getWeatherForecasts;
     CreateNewWeatherForecast = createNewWeatherForecast;
     UpdateWeatherForecast = updateWeatherForecast;
+    DeleteWeatherForecast = deleteWeatherForecast;
 }
 if (document.readyState == "loading") {
     document.addEventListener("DOMContentLoaded", app);
