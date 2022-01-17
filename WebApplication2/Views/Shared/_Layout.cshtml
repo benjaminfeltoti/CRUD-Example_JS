@@ -63,6 +63,24 @@
             <input type="submit" value="Create New" />
         </form>
     </div>
+    
+    <br />
+
+    <div style="padding-top : 20px">
+        <h1>UPDATE</h1>
+        <form action="javascript:void(0);" method="post" onsubmit="UpdateWeatherForecast();">
+            <select id="changeIdCombobox" selected=""></select>
+            <label for="dateInputChange">Date:</label>
+            <input type="datetime-local" id="dateInputChange" name="dateInputChange" /> <br />
+            <label for="celsiusInputChange">Celsius:</label>
+            <input type="number" id="celsiusInputChange" name="celsiusInputChange" /> <br />
+            <label for="summaryInputChange">Summary:</label>
+            <input type="text" id="summaryInputChange" name="summaryInputChange" /> <br />
+            <input type="submit" value="Modify" />
+        </form>
+    </div>
+
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
