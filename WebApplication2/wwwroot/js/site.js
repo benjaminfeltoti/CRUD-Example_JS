@@ -1,25 +1,25 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
-// Write your JavaScript code.
-function load() {
+var GetWeatherForecasts, CreateNewWeatherForecast;
+
+var app = function () {
 
     console.log("DOM Loaded.");
 
-    getApi();
+    getWeatherForecasts();
 
-    async function getApi(url = "https://localhost:44365/api/weather") {
-        // Get Data
+    async function getWeatherForecasts(url = "https://localhost:44365/api/weather") {
+
         const response = await fetch(url);
         let data = await response.json();
-        
-        // Load into table
+
         showTable(data);
     }
-    
-    function showTable(data){
-        let tableContent = 
-        `<tr>
+
+    function showTable(data) {
+        let tableContent =
+            `<tr>
             <th>Time</th>
             <th>Weather</th>
             <th>Celsius</th>
@@ -32,17 +32,41 @@ function load() {
                 <td>${item.summary}</td>
                 <td>${item.temperatureC} C°</td>
                 <td>${item.temperatureF} F°</td>
-            </tr>`;            
+            </tr>`;
         }
 
-        document.getElementById("contentTable").innerHTML=tableContent;
+        document.getElementById("contentTable").innerHTML = tableContent;
     }
 
+    async function CreateNewWeatherForecastEntity() {
+        console.log("POSTING WAS CALLED!");
 
+        const date = document.getElementById("dateInput").value;
+        const temperatureC = Number(document.getElementById("celsiusInput").value);
+        const summary = document.getElementById("summaryInput").value;
+
+        let weatherForecastObject = { id: 99, date: date, temperatureC: temperatureC, summary: summary };
+        let jsonstring = JSON.stringify(weatherForecastObject);
+        console.log(jsonstring);
+        let response = await fetch("api/weather", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: jsonstring
+        });
+        // TODO : Handle bad request
+        /* const content = await response.json();
+        console.log(content); */
+    }
+
+    GetWeatherForecasts = getWeatherForecasts;
+    CreateNewWeatherForecast = CreateNewWeatherForecastEntity;
 }
 if (document.readyState == "loading") {
-    document.addEventListener("DOMContentLoaded", load);
+    document.addEventListener("DOMContentLoaded", app);
 }
 else {
-    load();
+    app();
 }
