@@ -14,41 +14,46 @@ namespace WebApplication2.Controllers
     [ApiController]
     public class WeatherController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
+        IWeatherForecastService weatherForecastService;
+
+        public WeatherController()
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+            this.weatherForecastService = new WeatherForecastService();
+        }
 
         // GET: api/<WeatherController>
         [HttpGet]
         public IEnumerable<WeatherForecastModel> Get()
         {
-            return new WeatherForecastService().GetWeatherForecasts();
+            return weatherForecastService.GetWeatherForecasts();
         }
 
         // GET api/<WeatherController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public WeatherForecastModel Get(int id)
         {
-            return "value";
+            return weatherForecastService.GetWeatherForecasts().First(forecast => forecast.Id == id);
         }
 
         // POST api/<WeatherController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] WeatherForecastModel value)
         {
+            weatherForecastService.CreateNewForecast(value);
         }
 
         // PUT api/<WeatherController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] WeatherForecastModel value)
         {
+            weatherForecastService.UpdateWeatherForecast(value, id);
         }
 
         // DELETE api/<WeatherController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            weatherForecastService.DeleteWeatherForecast(id);
         }
     }
 }

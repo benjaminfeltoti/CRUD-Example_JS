@@ -8,6 +8,7 @@ using WebApplication2.Models;
 
 namespace WebApplication2.Services
 {
+    // TODO: Refactor file writings to one method
     public class WeatherForecastService : IWeatherForecastService
     {
         private const string dataAccessPath = "./data.json";
@@ -38,6 +39,20 @@ namespace WebApplication2.Services
             }
 
             return weatherForecastModels;
+        }
+
+        public void UpdateWeatherForecast(WeatherForecastModel weatherForecastModel, int weatherForecastId)
+        {
+            WeatherForecastModel[] forecastModels = GetWeatherForecasts().ToArray();
+            var modelIndex = Array.IndexOf(forecastModels, forecastModels.First(forecast => forecast.Id == weatherForecastId));
+            forecastModels[modelIndex] = weatherForecastModel;
+
+            var jsonText = JsonSerializer.Serialize(forecastModels);
+
+            using (StreamWriter streamWriter = new StreamWriter(dataAccessPath))
+            {
+                streamWriter.Write(jsonText);
+            }
         }
 
         public void ChangeWeatherForecast(int weatherForecastId, string propertyName, string newValue)

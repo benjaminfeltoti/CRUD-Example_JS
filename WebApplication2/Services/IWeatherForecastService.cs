@@ -9,6 +9,8 @@ namespace WebApplication2.Services
 
         IEnumerable<WeatherForecastModel> GetWeatherForecasts();
 
+        void UpdateWeatherForecast(WeatherForecastModel weatherForecastModel, int weatherForecastId);
+
         void ChangeWeatherForecast(int weatherForecastId, string propertyName, string newValue);
 
         void DeleteWeatherForecast(int weatherForecastId);
