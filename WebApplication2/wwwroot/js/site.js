@@ -1,23 +1,28 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
-var GetWeatherForecasts, CreateNewWeatherForecast, UpdateWeatherForecast, DeleteWeatherForecast;
+import getWeatherForecasts from "./Communication/WeatherForecastsRepository.js";
 
 var app = function () {
 
     console.log("DOM Loaded.");
+    console.log(window.location.origin);
 
-    getWeatherForecasts();
+    setupSubmitButtonListeners();
 
-    async function getWeatherForecasts(url = "https://localhost:44365/api/weather") {
-
-        const response = await fetch(url);
-        let data = await response.json();
-
-        processDataForElements(data);
+    function setupSubmitButtonListeners() {
+        document.getElementById("getSubmitButton").addEventListener("click", getWeatherForecasts(processDataForElements));
+        document.getElementById("postSubmitButton").addEventListener("click", createNewWeatherForecast);
+        document.getElementById("updateSubmitButton").addEventListener("click", updateWeatherForecast);
+        document.getElementById("deleteSubmitButton").addEventListener("click", deleteWeatherForecast);        
     }
 
-    function processDataForElements(data) {
+    getWeatherForecasts(processDataForElements);
+
+    //getWeatherForecasts().then(data => processDataForElements(data));
+
+    async function processDataForElements(data) {
+        console.log(data);
         let tableContent =
             `<tr>
             <th>Time</th>
@@ -27,7 +32,7 @@ var app = function () {
 
         let comboboxContent;
 
-        for (const item of data) {
+        data.forEach(item => {
             tableContent += `
             <tr>
                 <td>${item.date}</td>
@@ -39,7 +44,7 @@ var app = function () {
             comboboxContent += `
             <option>${item.id}</option>
             `;
-        }
+        });
 
         document.getElementById("contentTable").innerHTML = tableContent;
         document.getElementById("changeIdCombobox").innerHTML = comboboxContent;
@@ -108,12 +113,12 @@ var app = function () {
         // TODO : Handle bad request
         /* const content = await response.json();
         console.log(content); */
+
+        //IFFIE
+        //(function(){//code}())
     }
 
-    GetWeatherForecasts = getWeatherForecasts;
-    CreateNewWeatherForecast = createNewWeatherForecast;
-    UpdateWeatherForecast = updateWeatherForecast;
-    DeleteWeatherForecast = deleteWeatherForecast;
+
 }
 if (document.readyState == "loading") {
     document.addEventListener("DOMContentLoaded", app);

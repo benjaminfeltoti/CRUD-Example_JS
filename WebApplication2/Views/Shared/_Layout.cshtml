@@ -48,19 +48,19 @@
         <!--JS will load this area.-->
     </table>
     <div>
-        <button class="btn-dark" onclick="GetWeatherForecasts();">Refresh</button>
+        <button class="btn-dark" id="getSubmitButton">Refresh</button>
     </div>
 
     <div style="padding-top : 20px">
         <h1>POST</h1>
-        <form action="javascript:void(0);" method="post" onsubmit="CreateNewWeatherForecast();">
+        <form action="javascript:void(0);" method="post">
             <label for="dateInput">Date:</label>
             <input type="datetime-local" id="dateInput" name="dateInput" /> <br />
             <label for="celsiusInput">Celsius:</label>
             <input type="number" id="celsiusInput" name="celsiusInput" /> <br />
             <label for="summaryInput">Summary:</label>
             <input type="text" id="summaryInput" name="summaryInput" /> <br />
-            <input type="submit" value="Create New" />
+            <input type="submit" id="postSubmitButton" value="Create New" />
         </form>
     </div>
 
@@ -68,7 +68,7 @@
 
     <div style="padding-top : 20px">
         <h1>UPDATE</h1>
-        <form action="javascript:void(0);" method="post" onsubmit="UpdateWeatherForecast();">
+        <form action="javascript:void(0);" method="post">
             <select id="changeIdCombobox" selected=""></select>
             <label for="dateInputChange">Date:</label>
             <input type="datetime-local" id="dateInputChange" name="dateInputChange" /> <br />
@@ -76,7 +76,7 @@
             <input type="number" id="celsiusInputChange" name="celsiusInputChange" /> <br />
             <label for="summaryInputChange">Summary:</label>
             <input type="text" id="summaryInputChange" name="summaryInputChange" /> <br />
-            <input type="submit" value="Modify" />
+            <input type="submit" id="updateSubmitButton" value="Modify" />
         </form>
     </div>
 
@@ -84,13 +84,13 @@
 
     <div style="padding-top : 20px">
         <h1>DELETE</h1>
-        <form action="javascript:void(0);" method="post" onsubmit="DeleteWeatherForecast();">
+        <form action="javascript:void(0);" method="post">
             <select id="deleteIdCombobox" selected=""></select>            
-            <input type="submit" value="Delete" />
+            <input type="submit" id="deleteSubmitButton" value="Delete" />
         </form>
     </div>
 
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
