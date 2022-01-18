@@ -7,6 +7,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\js\Communication\" />
     <Folder Include="wwwroot\js\Common\" />
+    <Folder Include="wwwroot\js\Builder\" />
   </ItemGroup>
 
 </Project>

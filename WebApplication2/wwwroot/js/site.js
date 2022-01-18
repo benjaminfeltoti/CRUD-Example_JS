@@ -1,54 +1,29 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿import { getWeatherForecasts, createNewWeatherForecast, updateWeatherForecast, deleteWeatherForecast } from "./Communication/WeatherForecastsRepository.js";
+import processDataForWeatherForecastElements from "./Builder/WeatherForecastBuilder.js";
 
-import {getWeatherForecasts, createNewWeatherForecast, updateWeatherForecast, deleteWeatherForecast} from "./Communication/WeatherForecastsRepository.js";
+var app = function () {
 
-var app = async function () {
+    initialize();
+    
+    function initialize() {
 
-    console.log("DOM Loaded.");
-    console.log(window.location.origin);
+        initializeListeners();
+        reloadDataAndRedraw();
 
-    setupSubmitButtonListeners();
+        function initializeListeners() {
+            document.getElementById("getSubmitButton").addEventListener("click", reloadDataAndRedraw);
+            document.getElementById("postSubmitButton").addEventListener("click", createNewWeatherForecast);
+            document.getElementById("updateSubmitButton").addEventListener("click", updateWeatherForecast);
+            document.getElementById("deleteSubmitButton").addEventListener("click", deleteWeatherForecast);
 
-    async function setupSubmitButtonListeners() {
-        document.getElementById("getSubmitButton").addEventListener("click", (async () => {            
-            processDataForElements(await getWeatherForecasts());
-        })());
-        document.getElementById("postSubmitButton").addEventListener("click", createNewWeatherForecast);
-        document.getElementById("updateSubmitButton").addEventListener("click", updateWeatherForecast);
-        document.getElementById("deleteSubmitButton").addEventListener("click", deleteWeatherForecast);
-        
-        // Refresh content of comboboxes on opening
-    }
+            // Refresh content of comboboxes on opening
+            document.getElementById("changeIdCombobox").addEventListener("focus", reloadDataAndRedraw);
+            document.getElementById("deleteIdCombobox").addEventListener("focus", reloadDataAndRedraw);
+        }
 
-    async function processDataForElements(data) {
-
-        let tableContent =
-            `<tr>
-            <th>Time</th>
-            <th>Weather</th>
-            <th>Celsius</th>
-            <th>Fahrenheit</th>`;
-
-        let comboboxContent;
-
-        data.forEach(item => {
-            tableContent += `
-            <tr>
-                <td>${item.date}</td>
-                <td>${item.summary}</td>
-                <td>${item.temperatureC} C°</td>
-                <td>${item.temperatureF} F°</td>
-            </tr>`;
-
-            comboboxContent += `
-            <option>${item.id}</option>
-            `;
-        });
-
-        document.getElementById("contentTable").innerHTML = tableContent;
-        document.getElementById("changeIdCombobox").innerHTML = comboboxContent;
-        document.getElementById("deleteIdCombobox").innerHTML = comboboxContent;
+        async function reloadDataAndRedraw() {
+            processDataForWeatherForecastElements(await getWeatherForecasts());
+        }
     }
 }
 if (document.readyState == "loading") {
