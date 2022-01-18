@@ -1,7 +1,7 @@
-async function getWeatherForecastsFetch(callbackFunction) {
+async function getWeatherForecasts() {
     const response = await fetch("api/weather");
     // TODO : Handle Errors
-    await response.json().then(data => callbackFunction(data));
+    return await response.json();
 }
 
-export default getWeatherForecastsFetch;
+export default getWeatherForecasts;

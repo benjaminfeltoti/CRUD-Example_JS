@@ -3,26 +3,24 @@
 
 import getWeatherForecasts from "./Communication/WeatherForecastsRepository.js";
 
-var app = function () {
+var app = async function () {
 
     console.log("DOM Loaded.");
     console.log(window.location.origin);
 
     setupSubmitButtonListeners();
 
-    function setupSubmitButtonListeners() {
-        document.getElementById("getSubmitButton").addEventListener("click", getWeatherForecasts(processDataForElements));
+    async function setupSubmitButtonListeners() {
+        document.getElementById("getSubmitButton").addEventListener("click", (async () => {            
+            processDataForElements(await getWeatherForecasts());
+        })());
         document.getElementById("postSubmitButton").addEventListener("click", createNewWeatherForecast);
         document.getElementById("updateSubmitButton").addEventListener("click", updateWeatherForecast);
-        document.getElementById("deleteSubmitButton").addEventListener("click", deleteWeatherForecast);        
+        document.getElementById("deleteSubmitButton").addEventListener("click", deleteWeatherForecast);
     }
 
-    getWeatherForecasts(processDataForElements);
-
-    //getWeatherForecasts().then(data => processDataForElements(data));
-
     async function processDataForElements(data) {
-        console.log(data);
+
         let tableContent =
             `<tr>
             <th>Time</th>
@@ -117,8 +115,6 @@ var app = function () {
         //IFFIE
         //(function(){//code}())
     }
-
-
 }
 if (document.readyState == "loading") {
     document.addEventListener("DOMContentLoaded", app);
