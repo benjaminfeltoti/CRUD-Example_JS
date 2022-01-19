@@ -30,9 +30,20 @@ namespace WebApplication2.Controllers
 
         // GET api/<WeatherController>/5
         [HttpGet("{id}")]
-        public WeatherForecastModel Get(int id)
+        public IActionResult Get(int id)
         {
-            return weatherForecastService.GetWeatherForecasts().First(forecast => forecast.Id == id);
+            WeatherForecastModel model = new WeatherForecastModel() { Id = id };
+
+            try
+            {
+                weatherForecastService.GetWeatherForecasts().First(forecast => forecast.Id == id);                
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound(model);
+            }
+
+            return Ok(model);
         }
 
         // POST api/<WeatherController>
@@ -43,7 +54,7 @@ namespace WebApplication2.Controllers
 
             if (model == null)
             {
-                return BadRequest();
+                return BadRequest(value);
             }
 
             return Created("api/[controller]/" + model.Id, model);
@@ -51,16 +62,26 @@ namespace WebApplication2.Controllers
 
         // PUT api/<WeatherController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] WeatherForecastModel value)
+        public IActionResult Put(int id, [FromBody] WeatherForecastModel value)
         {
-            weatherForecastService.UpdateWeatherForecast(value, id);
+            if (weatherForecastService.UpdateWeatherForecast(value, id))
+            {
+                return Ok(value);
+            }
+
+            return NotFound(value);            
         }
 
         // DELETE api/<WeatherController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-            weatherForecastService.DeleteWeatherForecast(id);
+            if (weatherForecastService.DeleteWeatherForecast(id))
+            {
+                return Ok(id);
+            }
+
+            return NotFound(id);
         }
     }
 }

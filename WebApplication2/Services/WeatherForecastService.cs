@@ -45,9 +45,19 @@ namespace WebApplication2.Services
 
         public bool UpdateWeatherForecast(WeatherForecastModel weatherForecastModel, int weatherForecastId)
         {
-            WeatherForecastModel[] forecastModels = GetWeatherForecasts().ToArray();
-            var modelIndex = Array.IndexOf(forecastModels, forecastModels.First(forecast => forecast.Id == weatherForecastId));
-            forecastModels[modelIndex] = weatherForecastModel;
+            WeatherForecastModel[] forecastModels;
+
+            try
+            {
+                forecastModels = GetWeatherForecasts().ToArray();
+                var modelIndex = Array.IndexOf(forecastModels, forecastModels.First(forecast => forecast.Id == weatherForecastId));
+                forecastModels[modelIndex] = weatherForecastModel;                
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            
 
             return TrySerialize(forecastModels);
         }
@@ -68,7 +78,14 @@ namespace WebApplication2.Services
 
         public bool DeleteWeatherForecast(int weatherForecastId)
         {
-            return TrySerialize(GetWeatherForecasts().Where(forecast => forecast.Id != weatherForecastId));
+            var forecasts = GetWeatherForecasts();
+
+            if (!forecasts.Any(forecast => forecast.Id == weatherForecastId))
+            {
+                return false;
+            }
+
+            return TrySerialize(forecasts.Where(forecast => forecast.Id != weatherForecastId));
         }
 
         private bool TrySerialize(object objectToSerialize)
@@ -100,7 +117,7 @@ namespace WebApplication2.Services
 
         private int GenerateId(IEnumerable<WeatherForecastModel> forecastModels)
         {
-            int highestId = -1;
+            int highestId = 1;
 
             foreach (var model in forecastModels)
             {
@@ -110,7 +127,7 @@ namespace WebApplication2.Services
                 }
             }
 
-            return highestId;
+            return highestId + 1;
         }
     }
 }
