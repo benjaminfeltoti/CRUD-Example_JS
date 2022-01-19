@@ -37,9 +37,16 @@ namespace WebApplication2.Controllers
 
         // POST api/<WeatherController>
         [HttpPost]
-        public void Post([FromBody] WeatherForecastModel value)
+        public IActionResult Post([FromBody] WeatherForecastModel value)
         {
-            weatherForecastService.CreateNewForecast(value);
+            var model = weatherForecastService.CreateNewForecast(value);
+
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            return Created("api/[controller]/" + model.Id, model);
         }
 
         // PUT api/<WeatherController>/5

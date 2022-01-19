@@ -15,14 +15,19 @@ namespace WebApplication2.Services
 
         private object _lock = new object();
 
-        public void CreateNewForecast(WeatherForecastModel model)
+        public WeatherForecastModel CreateNewForecast(WeatherForecastModel model)
         {
-            var jsonText = JsonSerializer.Serialize(GetWeatherForecasts().Append(model));
+            //TODO : input verification
+            var forecasts = GetWeatherForecasts();
 
-            using (StreamWriter streamWriter = new StreamWriter(dataAccessPath))
+            model.Id = GenerateId(forecasts);
+
+            if (TrySerialize(forecasts.Append(model)))
             {
-                streamWriter.Write(jsonText);
+                return model;
             }
+
+            return null;
         }
 
         // TODO: Refactor to Async
@@ -30,29 +35,21 @@ namespace WebApplication2.Services
         {
             List<WeatherForecastModel> weatherForecastModels;
 
-            lock (_lock)
+            using (StreamReader streamReader = new StreamReader(dataAccessPath))
             {
-                using (StreamReader streamReader = new StreamReader(dataAccessPath))
-                {
-                    weatherForecastModels = JsonSerializer.Deserialize<List<WeatherForecastModel>>(streamReader.ReadToEnd());
-                }
+                weatherForecastModels = JsonSerializer.Deserialize<List<WeatherForecastModel>>(streamReader.ReadToEnd());
             }
 
             return weatherForecastModels;
         }
 
-        public void UpdateWeatherForecast(WeatherForecastModel weatherForecastModel, int weatherForecastId)
+        public bool UpdateWeatherForecast(WeatherForecastModel weatherForecastModel, int weatherForecastId)
         {
             WeatherForecastModel[] forecastModels = GetWeatherForecasts().ToArray();
             var modelIndex = Array.IndexOf(forecastModels, forecastModels.First(forecast => forecast.Id == weatherForecastId));
             forecastModels[modelIndex] = weatherForecastModel;
 
-            var jsonText = JsonSerializer.Serialize(forecastModels);
-
-            using (StreamWriter streamWriter = new StreamWriter(dataAccessPath))
-            {
-                streamWriter.Write(jsonText);
-            }
+            return TrySerialize(forecastModels);
         }
 
         public void ChangeWeatherForecast(int weatherForecastId, string propertyName, string newValue)
@@ -69,14 +66,51 @@ namespace WebApplication2.Services
             }
         }
 
-        public void DeleteWeatherForecast(int weatherForecastId)
+        public bool DeleteWeatherForecast(int weatherForecastId)
         {
-            var jsonText = JsonSerializer.Serialize(GetWeatherForecasts().Where(forecast => forecast.Id != weatherForecastId));
+            return TrySerialize(GetWeatherForecasts().Where(forecast => forecast.Id != weatherForecastId));
+        }
 
-            using (StreamWriter streamWriter = new StreamWriter(dataAccessPath))
+        private bool TrySerialize(object objectToSerialize)
+        {
+            bool success = false;
+
+            lock (_lock)
             {
-                streamWriter.Write(jsonText);
+                try
+                {
+                    var jsonText = JsonSerializer.Serialize(objectToSerialize);
+
+                    StreamWriter streamWriter = new StreamWriter(dataAccessPath);
+                    streamWriter.Write(jsonText);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                    streamWriter.Dispose();
+
+                    success = true;
+                }
+                catch (Exception)
+                {
+                    // Suspend any error for now.
+                }
             }
+
+            return success;
+        }
+
+        private int GenerateId(IEnumerable<WeatherForecastModel> forecastModels)
+        {
+            int highestId = -1;
+
+            foreach (var model in forecastModels)
+            {
+                if (highestId < model.Id)
+                {
+                    highestId = model.Id;
+                }
+            }
+
+            return highestId;
         }
     }
 }

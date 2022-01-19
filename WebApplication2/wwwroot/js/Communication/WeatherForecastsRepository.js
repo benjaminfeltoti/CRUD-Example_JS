@@ -22,9 +22,20 @@ async function createNewWeatherForecast() {
         },
         body: jsonstring
     });
-    // TODO : Handle bad request
-    /* const content = await response.json();
-    console.log(content); */
+
+    if (response.status === 201) {
+        console.log("201 returned!");
+
+        try {
+            const content = await response.json();
+            return content;            
+        } catch (error) {
+        }
+    }
+    else {
+        console.log("Request was bad");
+        return "Error in formatting!";
+    }
 }
 
 async function updateWeatherForecast() {
@@ -71,4 +82,4 @@ async function deleteWeatherForecast() {
     //(function(){//code}())
 }
 
-export {getWeatherForecasts, createNewWeatherForecast, updateWeatherForecast, deleteWeatherForecast};
+export { getWeatherForecasts, createNewWeatherForecast, updateWeatherForecast, deleteWeatherForecast };
