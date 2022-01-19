@@ -1,3 +1,8 @@
+const header = {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+};
+
 async function getWeatherForecasts() {
     const response = await fetch("api/weather");
     // TODO : Handle Errors
@@ -5,7 +10,6 @@ async function getWeatherForecasts() {
 }
 
 async function createNewWeatherForecast() {
-    console.log("POSTING WAS CALLED!");
 
     const date = document.getElementById("dateInput").value;
     const temperatureC = Number(document.getElementById("celsiusInput").value);
@@ -13,19 +17,13 @@ async function createNewWeatherForecast() {
 
     let weatherForecastObject = { id: -1, date: date, temperatureC: temperatureC, summary: summary };
     let jsonstring = JSON.stringify(weatherForecastObject);
-    console.log(jsonstring);
     let response = await fetch("api/weather", {
         method: "POST",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
+        headers: header,
         body: jsonstring
     });
 
-    if (response.status === 201) {
-        console.log("201 returned!");
-
+    if (response.status === 201) {        
         try {
             const content = await response.json();
             return content;            
@@ -33,13 +31,11 @@ async function createNewWeatherForecast() {
         }
     }
     else {
-        console.log("Request was bad");
         return "Error in formatting!";
     }
 }
 
 async function updateWeatherForecast() {
-    console.log("PUT WAS CALLED!");
 
     const id = Number(document.getElementById("changeIdCombobox").value);
     const date = document.getElementById("dateInputChange").value;
@@ -48,35 +44,22 @@ async function updateWeatherForecast() {
 
     let weatherForecastObject = { id: id, date: date, temperatureC: temperatureC, summary: summary };
     let jsonstring = JSON.stringify(weatherForecastObject);
-    console.log(jsonstring);
     let response = await fetch(`api/weather/${id}`, {
         method: "PUT",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
+        headers: header,
         body: jsonstring
     });
-    // TODO : Handle bad request
-    /* const content = await response.json();
-    console.log(content); */
+    // TODO : Handle bad request    
 }
 
 async function deleteWeatherForecast() {
-    console.log("DELETE WAS CALLED!");
-
     const id = Number(document.getElementById("deleteIdCombobox").value);
     let response = await fetch(`api/weather/${id}`, {
         method: "DELETE",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
+        headers: header,
         body: ""
     });
     // TODO : Handle bad request
-    /* const content = await response.json();
-    console.log(content); */
 
     //IFFIE
     //(function(){//code}())
